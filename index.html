@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Parentheses Validator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7fa;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 400px;
+            margin: auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        .stack-container {
+            display: flex;
+            flex-direction: column-reverse;
+            align-items: center;
+            border: 2px solid #4a90e2;
+            height: 200px;
+            width: 150px;
+            margin: 20px auto;
+            padding: 5px;
+            border-radius: 8px;
+            background-color: #e8f1fd;
+        }
+
+        .stack-element {
+            background-color: #4a90e2;
+            color: white;
+            border: 1px solid #337ab7;
+            padding: 10px;
+            margin: 3px 0;
+            text-align: center;
+            width: 80%;
+            font-size: 14px;
+            border-radius: 4px;
+            transition: transform 0.2s ease;
+        }
+
+        .stack-element:hover {
+            transform: scale(1.05);
+        }
+
+        .buttons-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        button {
+            padding: 10px 15px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #4a90e2;
+            color: white;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #357ab8;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            width: calc(100% - 22px);
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        #result {
+            margin-top: 10px;
+            font-weight: bold;
+            color: #4a90e2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Interactive Parentheses Validator</h2>
+        <p>Enter a string of parentheses to check its validity:</p>
+        <div class="input-container">
+            <input type="text" id="inputString" placeholder="Enter parentheses string" />
+            <button onclick="validateParentheses()">Validate</button>
+        </div>
+        <div class="stack-container" id="stack">
+            <!-- Stack elements will be displayed here -->
+        </div>
+        <p id="result">Result: </p>
+    </div>
+
+    <script>
+        const stack = [];
+        const pairs = { ')': '(', '}': '{', ']': '[' };
+
+        function updateStackDisplay() {
+            const stackContainer = document.getElementById('stack');
+            stackContainer.innerHTML = '';
+            stack.forEach(element => {
+                const stackElement = document.createElement('div');
+                stackElement.className = 'stack-element';
+                stackElement.innerText = element;
+                stackContainer.appendChild(stackElement);
+            });
+        }
+
+        function validateParentheses() {
+            const input = document.getElementById('inputString').value;
+            stack.length = 0;  // Reset the stack
+            updateStackDisplay(); // Clear the display
+            let isValid = true;
+
+            for (let char of input) {
+                if (Object.values(pairs).includes(char)) {
+                    stack.push(char);
+                    updateStackDisplay();
+                } else if (stack.length > 0 && pairs[char] === stack[stack.length - 1]) {
+                    stack.pop();
+                    updateStackDisplay();
+                } else {
+                    isValid = false;
+                    break;
+                }
+            }
+
+            if (isValid && stack.length === 0) {
+                document.getElementById('result').innerText = 'Result: Valid String';
+                document.getElementById('result').style.color = '#28a745';
+            } else {
+                document.getElementById('result').innerText = 'Result: Invalid String';
+                document.getElementById('result').style.color = '#dc3545';
+            }
+        }
+    </script>
+</body>
+</html>
